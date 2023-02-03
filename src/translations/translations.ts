@@ -13,9 +13,11 @@ const translation = {
       "orderBook": {
         "heading": "Order Book",
         "price": "Price {currency}",
-        "amount": "Amount"
+        "amount": "Amount",
+        "buying": "Buying",
+        "selling": "Selling"
       },
-      "bids": {
+      "trades": {
         "heading": "Last Trades",
         "price": "Price {currency}",
         "amount": "Amount",
@@ -37,9 +39,11 @@ const translation = {
       "orderBook": {
         "heading": "Livro de ofertas",
         "price": "Preço {currency}",
-        "amount": "Quantidade"
+        "amount": "Quantidade",
+        "buying": "Comprando",
+        "selling": "Vendendo"
       },
-      "bids": {
+      "trades": {
         "heading": "Últimas negociações",
         "price": "Preço {currency}",
         "amount": "Quantidade",
