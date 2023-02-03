@@ -29,3 +29,20 @@ https://www.mercadobitcoin.com.br/api-doc/
 Resolvemos não especificar nada sobre o layout para que você tenha total liberdade de decidir sobre a estrutura do projeto, quais bibliotecas usar e a melhor maneira de como apresentar os dados.
 
 Em caso de dúvidas sobre a implementação entre em contato com yudi@khizadao.com
+
+# Initialização
+
+Para iniciar a aplicação localmente, basta possuir o node instalado e rodar
+
+```
+npm install
+
+# ou
+
+yarn
+
+```
+
+Após instalar as dependencias, rode o comanado `yarn vite` para abrir o localhost
+
+E é isso, obrigado!
