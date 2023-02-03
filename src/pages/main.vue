@@ -22,9 +22,11 @@ const {
 } = useStore();
 
 setInterval(function () {
-  fetchCoinOrderBook();
+  if (!store.isDateFilterActive.value) {
+    fetchCoinTrades();
+  }
   fetchCoinTicker();
-  fetchCoinTrades();
+  fetchCoinOrderBook();
 }, 5000);
 </script>
 
