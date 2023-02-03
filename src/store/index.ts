@@ -6,17 +6,26 @@ import ICoinTickers from "../types/ticker";
 import ICoinOrderBook from "../types/orderbook";
 import CoinList from "../CoinList/coins";
 import { defineStore } from "pinia";
+import { toast } from "vue3-toastify";
+import "vue3-toastify/dist/index.css";
+import { ref } from "vue";
 
 export interface IState {
   language: string;
   selectedCoin: ICoin;
   coinTrades: ICoinTrades[];
+  coinTradesFilter: ICoinTrades[];
   coinTicker: ICoinTickers;
   coinOrderBook: ICoinOrderBook;
   dayVariation: number;
   currency: string;
+  date: Date[];
+  startDate: Date;
+  endDate: Date;
+  isDateFilterActive: boolean;
 }
 
+const endDate = ref(new Date());
 
 export const useStore = defineStore("coin", {
   state: () =>
@@ -28,24 +37,23 @@ export const useStore = defineStore("coin", {
         (item) => item.code === "BTC"
       ) as ICoin,
       coinTrades: [{}] as ICoinTrades[],
+      coinTradesFilter: [{}] as ICoinTrades[],
       coinTicker: {} as ICoinTickers,
       coinOrderBook: {} as ICoinOrderBook,
       dayVariation: 0 as number,
       currency: "R$",
+      date: [
+        new Date(
+          new Date().setDate(
+            Math.floor(
+              endDate.value.getDate() - 7
+            )
+          )
+        ),
+        new Date(),
+      ] as Date[],
+      isDateFilterActive: false,
     } as IState),
-  getters: {
-    getLanguage(state) {
-      return state.language;
-    },
-    getSelectedCoin: (state) =>
-      state.selectedCoin,
-    getCoinTrades: (state) => state.coinTrades,
-    getCoinTicker: (state) => state.coinTicker,
-    getCoinOrderBook: (state) =>
-      state.coinOrderBook,
-    getDayVariation: (state) =>
-      state.dayVariation,
-  },
   actions: {
     async fetchCoinTicker(): Promise<ICoinTickers> {
       try {
@@ -55,11 +63,11 @@ export const useStore = defineStore("coin", {
           baseUrl + code + "/ticker/"
         );
 
-        console.log(data.data);
-
         return (this.coinTicker = data.data);
       } catch (error) {
-        alert(error);
+        toast.error(
+          "Something went wrong, check console log"
+        );
         console.log(error);
         return {} as ICoinTickers;
       }
@@ -71,12 +79,15 @@ export const useStore = defineStore("coin", {
         const data = await axios.get(
           baseUrl + code + "/trades/"
         );
+        const newData: ICoinTrades[] = data.data;
 
-        console.log(data.data);
-
-        this.coinTrades = data.data;
+        this.coinTrades = newData
+          .reverse()
+          .splice(0, 30);
       } catch (error) {
-        alert(error);
+        toast.error(
+          "Something went wrong, check console log"
+        );
         console.log(error);
       }
     },
@@ -88,11 +99,46 @@ export const useStore = defineStore("coin", {
           baseUrl + code + "/orderbook/"
         );
 
-        console.log(data.data);
+        const newData: ICoinOrderBook = data.data;
 
-        this.coinOrderBook = data.data;
+        newData.asks.splice(13);
+        newData.bids.splice(13);
+
+        this.coinOrderBook = newData;
       } catch (error) {
-        alert(error);
+        toast.error(
+          "Something went wrong, check console log"
+        );
+        console.log(error);
+      }
+    },
+    async fetchCoinTradeFilteredByDate(
+      startDate: Date,
+      endDate: Date
+    ) {
+      try {
+        const { code } = this.selectedCoin;
+
+        const data = await axios.get(
+          baseUrl +
+            code +
+            "/trades/" +
+            Math.floor(
+              this.date[0].getTime() / 1000
+            ) +
+            "/" +
+            Math.floor(
+              this.date[1].getTime() / 1000
+            ) +
+            "/"
+        );
+        const newData: ICoinTrades[] = data.data;
+
+        this.coinTrades = newData.reverse();
+      } catch (error) {
+        toast.error(
+          "Something went wrong, check console log"
+        );
         console.log(error);
       }
     },
@@ -102,6 +148,44 @@ export const useStore = defineStore("coin", {
           parseInt(this.coinTicker.ticker.open) -
           1) *
         100;
+    },
+    filterResults() {
+      this.fetchCoinTradeFilteredByDate(
+        this.date[0],
+        this.date[1]
+      );
+
+      this.isDateFilterActive = true;
+
+      toast.success(
+        "Filtered between " +
+          this.date[0] +
+          " and " +
+          this.date[1]
+      );
+    },
+    resetFilter() {
+      // this.endDate = new Date();
+      // this.startDate = new Date(
+      //   new Date().setDate(
+      //     Math.floor(this.endDate.getDate() - 7)
+      //   )
+      // );
+      // this.date = [this.startDate, this.endDate];
+      this.fetchCoinTrades();
+
+      this.isDateFilterActive = false;
+    },
+    changeLanguage() {
+      const language =
+        this.language === "pt" ? "en" : "pt";
+      this.language = language;
+      localStorage.clear();
+      localStorage.setItem(
+        "@khiza:user-locale",
+        language
+      );
+      location.reload();
     },
   },
 });
