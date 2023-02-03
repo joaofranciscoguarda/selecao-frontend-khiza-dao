@@ -9,40 +9,14 @@ import { useStore } from "../store/index";
 import selectCoin from "../components/SelectCoin.vue";
 import ShowTicker from "../components/ShowTicker.vue";
 import ShowTrades from "../components/ShowTrades.vue";
-import languages from "../types/languages";
+import ShowOrderBook from "../components/ShowOrderBook.vue";
 
 const store = toRefs(useStore());
-
-function changeLanguage() {
-  const language =
-    store.language.value === "pt" ? "en" : "pt";
-  console.log(store.language.value);
-  store.language.value = language;
-  localStorage.clear();
-  localStorage.setItem(
-    "@khiza:user-locale",
-    language
-  );
-  location.reload();
-}
-
-const date = ref();
-
-onMounted(() => {
-  const startDate = new Date();
-  const endDate = new Date(
-    new Date().setDate(startDate.getDate())
-  );
-  date.value = [startDate, endDate];
-});
-
-watch(
-  date,
-  (date, prevDate) => {
-    console.log(date.value);
-  },
-  { deep: true }
-);
+const {
+  filterResults,
+  resetFilter,
+  changeLanguage,
+} = useStore();
 </script>
 
 <template>
@@ -50,11 +24,22 @@ watch(
     <main class="main">
       <header>
         <selectCoin class="select-coin" />
-        <Datepicker
-          v-model="date"
-          range
-          fixed-end
-          :clearable="false" />
+        <div>
+          <Datepicker
+            v-model="store.date.value"
+            range
+            :clearable="false" />
+          <button
+            v-if="!store.isDateFilterActive.value"
+            @click="filterResults">
+            Filtrar
+          </button>
+          <button
+            v-if="store.isDateFilterActive.value"
+            @click="resetFilter">
+            Remove filter
+          </button>
+        </div>
         <div
           v-on:click="changeLanguage"
           class="imgs-div">
@@ -75,7 +60,10 @@ watch(
         }}
       </p>
       <ShowTicker></ShowTicker>
-      <div class="info-cards"></div>
+      <div class="info-cards">
+        <ShowOrderBook></ShowOrderBook>
+        <ShowTrades></ShowTrades>
+      </div>
       <footer class="footer">
         2022 Khiza DAO
       </footer>
@@ -97,7 +85,7 @@ watch(
   min-height: 100vh;
   justify-content: baseline;
   position: relative;
-  padding: 1% 5%;
+  padding: 1% 5% 5% 5%;
 }
 
 header {
@@ -141,7 +129,7 @@ header {
   display: flex;
   widows: 100%;
   height: 100%;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: baseline;
 }
 
@@ -154,5 +142,6 @@ header {
   align-items: flex-end;
   position: absolute;
   bottom: 0;
+  left: 0;
 }
 </style>
