@@ -1,126 +1,119 @@
 <script setup lang="ts">
 import { useStore } from "../store";
-import { watch, ref, toRefs } from "vue";
+import {
+  watch,
+  ref,
+  toRefs,
+  onMounted,
+} from "vue";
 import formatToLocale from "../utils/formatter";
 
 const {
   currency,
   dayVariation,
   selectedCoin,
-  coinTicker,
+  coinOrderBook,
   language,
 } = toRefs(useStore());
-const { fetchCoinTicker, calcDayVariation } =
+const { fetchCoinOrderBook, calcDayVariation } =
   useStore();
 
-fetchCoinTicker();
+onMounted(() => {
+  fetchCoinOrderBook();
+});
 
 watch(
   selectedCoin,
   async (selectedCoin, prevSelectedCoin) => {
-    console.log(selectedCoin);
-    fetchCoinTicker();
+    fetchCoinOrderBook();
   },
   { deep: true }
 );
 
-watch(
-  coinTicker,
-  async (coinTicker, preCoinTicker) => {
-    calcDayVariation();
-  },
-  { deep: true }
-);
 </script>
 
 <template>
-  <div class="day-info-bar">
-    <div class="specific-info">
-      <p>{{ $t("trading.tickers.value") }}</p>
-      <div
-        v-if="coinTicker.ticker"
-        class="numbers">
-        {{ currency }}
-        {{
-          formatToLocale(
-            language.valueOf(),
-            parseInt(coinTicker.ticker.last)
-          )
-        }}
-        <p
-          v-bind:style="[
-            dayVariation > 0
-              ? { color: 'green' }
-              : { color: 'red' },
-          ]"
-          v-if="dayVariation"
-          class="percentage">
-          {{ dayVariation.toFixed(2) }}%
+  <div class="order-book">
+    <div class="heading">
+      <h3>
+        {{ $t("trading.orderBook.heading") }}
+      </h3>
+    </div>
+    <div class="order-book-info">
+      <div class="infos-div">
+        <p class="heading">
+          {{ $t("trading.orderBook.selling") }}
         </p>
+        <div class="subtitles">
+          <p>
+            {{
+              $t("trading.orderBook.price", {
+                currency: currency,
+              })
+            }}
+          </p>
+          <p>
+            {{ $t("trading.orderBook.amount") }}
+          </p>
+        </div>
+        <div
+          v-if="coinOrderBook"
+          v-for="item in coinOrderBook.asks"
+          class="info-asks">
+          <p>
+            {{
+              formatToLocale(language, item[0])
+            }}
+          </p>
+          <p>
+            {{
+              formatToLocale(language, item[1], 6)
+            }}
+          </p>
+        </div>
       </div>
-    </div>
-    <div class="specific-info">
-      <p>{{ $t("trading.tickers.opening") }}</p>
-      <div
-        v-if="coinTicker.ticker"
-        class="numbers">
-        {{ currency }}
-        {{
-          formatToLocale(
-            language.valueOf(),
-            parseInt(coinTicker.ticker.open)
-          )
-        }}
-      </div>
-    </div>
-    <div class="specific-info">
-      <p>{{ $t("trading.tickers.max") }}</p>
-      <div
-        v-if="coinTicker.ticker"
-        class="numbers">
-        {{ currency }}
-        {{
-          formatToLocale(
-            language.valueOf(),
-            parseInt(coinTicker.ticker.high)
-          )
-        }}
-      </div>
-    </div>
-    <div class="specific-info">
-      <p>{{ $t("trading.tickers.min") }}</p>
-      <div
-        v-if="coinTicker.ticker"
-        class="numbers">
-        {{ currency }}
-        {{
-          formatToLocale(
-            language.valueOf(),
-            parseInt(coinTicker.ticker.low)
-          )
-        }}
-      </div>
-    </div>
-    <div class="specific-info">
-      <p>{{ $t("trading.tickers.volume") }}</p>
-      <div
-        v-if="coinTicker.ticker"
-        class="numbers">
-        {{
-          formatToLocale(
-            language.valueOf(),
-            parseInt(coinTicker.ticker.vol)
-          )
-        }}
+      <div class="infos-div">
+        <p class="heading">
+          {{ $t("trading.orderBook.buying") }}
+        </p>
+        <div class="subtitles">
+          <p>
+            {{
+              $t("trading.orderBook.price", {
+                currency: currency,
+              })
+            }}
+          </p>
+          <p>
+            {{ $t("trading.orderBook.amount") }}
+          </p>
+        </div>
+        <div
+          v-if="coinOrderBook"
+          v-for="item in coinOrderBook.bids"
+          class="info-bids">
+          <p>
+            {{
+              formatToLocale(language, item[0])
+            }}
+          </p>
+          <p>
+            {{
+              formatToLocale(language, item[1], 6)
+            }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.day-info-bar {
+.order-book {
+  width: 45%;
+
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   background-color: white;
   color: black;
   border-radius: 12px;
@@ -128,26 +121,44 @@ watch(
   padding: 12px 0px;
   margin-top: 25px;
 
+  justify-content: baseline;
+  align-items: center;
+}
+
+.order-book-info {
+  display: flex;
+  width: 100%;
   justify-content: space-evenly;
 }
-.specific-info p {
-  font-size: 10px;
+.heading {
+  width: 100%;
+  text-align: center;
 }
-
-.numbers {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.numbers {
-  font-size: 18px;
-  font-weight: bold;
+.subtitles {
   display: flex;
   align-items: center;
-  margin-left: 0px;
+  justify-content: space-evenly;
 }
 
-.percentage {
-  margin-left: 10px;
+.infos-div {
+  width: 50%;
+}
+p {
+  width: 90px;
+  text-align: center;
+}
+.info-asks,
+.info-bids {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.info-asks {
+  color: green;
+}
+
+.info-bids {
+  color: red;
 }
 </style>
