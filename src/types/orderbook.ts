@@ -1,6 +1,6 @@
 interface ICoinOrderBook {
-  asks: [[]];
-  bids: [[]];
+  asks: [number[]];
+  bids: [number[]];
   timestamp: number;
 }
 
