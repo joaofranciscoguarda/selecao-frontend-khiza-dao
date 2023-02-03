@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { useStore } from "../store";
-import { watch, ref, toRefs } from "vue";
+import {
+  watch,
+  ref,
+  toRefs,
+  onMounted,
+} from "vue";
 import formatToLocale from "../utils/formatter";
 
 const {
@@ -13,12 +18,14 @@ const {
 const { fetchCoinTicker, calcDayVariation } =
   useStore();
 
-fetchCoinTicker();
+onMounted(() => {
+  fetchCoinTicker();
+});
 
 watch(
   selectedCoin,
   async (selectedCoin, prevSelectedCoin) => {
-    console.log(selectedCoin);
+
     fetchCoinTicker();
   },
   { deep: true }
