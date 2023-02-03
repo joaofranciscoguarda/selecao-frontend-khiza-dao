@@ -16,6 +16,9 @@ import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
 import { createPinia } from "pinia";
+import Vue3Toastify, {
+  type ToastContainerOptions,
+} from "vue3-toastify";
 
 import * as VueI18n from "vue-i18n";
 import messages from "./translations/translations";
@@ -44,5 +47,12 @@ createApp(App)
   .use(createPinia())
   .use(i18n)
   .use(vuetify)
+  .use(Vue3Toastify, {
+    autoClose: 3000,
+    style: {
+      opacity: "1",
+      userSelect: "initial",
+    },
+  } as ToastContainerOptions)
   .component("Datepicker", Datepicker)
   .mount("#app");
