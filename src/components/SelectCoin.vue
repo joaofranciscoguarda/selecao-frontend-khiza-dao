@@ -1,46 +1,46 @@
 <script setup lang="ts">
-import Coin from "../types/coin";
+import ICoin from "../types/coin";
 import CoinList from "../CoinList/coins";
-import { defineComponent, ref } from "vue";
+import {
+  defineComponent,
+  ref,
+  watch,
+  toRefs,
+} from "vue";
+import { useStore } from "../store/index";
 
-const coins = ref<Coin[]>(CoinList);
-const select = ref(
-  CoinList.find(
-    (item) => item.code === "BTC"
-  ) as Coin
-);
-const items = ref(
-  CoinList.sort((a, b) => {
-    //sort alphabeticly
-    if (a.name > b.name) return -1;
-    else return 1;
-  }).sort((a, b) => {
-    //sort by famous and if its cryptocurrency
-    if (a.famous && !b.famous) return -1;
-    else if (
-      a.category === "cryptocurrencies" &&
-      b.category !== "cryptocurrencies"
-    )
-      return -1;
-    else return 1;
-  })
-);
+const store = toRefs(useStore());
 
-console.log(items);
+const coins = ref<ICoin[]>(CoinList);
+const select = ref(store.selectedCoin);
+
+const items = CoinList.sort((a, b) => {
+  //sort alphabeticly
+  if (a.name > b.name) return -1;
+  else return 1;
+}).sort((a, b) => {
+  //sort by famous and if its cryptocurrency
+  if (a.famous && !b.famous) return -1;
+  else if (
+    a.category === "cryptocurrencies" &&
+    b.category !== "cryptocurrencies"
+  )
+    return -1;
+  else return 1;
+});
 
 function changeCoin(event: any) {
-  select.value = event.target.value;
-  console.log(event);
+  store.selectedCoin = event.target.value;
 }
 </script>
 
 <template>
-  {{ select }}
   <div class="select-coin">
     <v-select
       v-model="select"
       :hint="`${select.code}, ${select.name}`"
       :items="items"
+      :append-inner-icon="'fa-brands fa-bitcoin'"
       item-title="name"
       item-value="code"
       label="Select"
@@ -53,8 +53,8 @@ function changeCoin(event: any) {
 
 <style scoped>
 .select-coin {
-  width: 150px;
-  height: 75px;
+  width: 350px;
+  height: 90px;
   border-radius: 12px;
   color: black;
   background-color: white;
