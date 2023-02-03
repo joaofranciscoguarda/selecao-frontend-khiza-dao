@@ -165,13 +165,6 @@ export const useStore = defineStore("coin", {
       );
     },
     resetFilter() {
-      // this.endDate = new Date();
-      // this.startDate = new Date(
-      //   new Date().setDate(
-      //     Math.floor(this.endDate.getDate() - 7)
-      //   )
-      // );
-      // this.date = [this.startDate, this.endDate];
       this.fetchCoinTrades();
 
       this.isDateFilterActive = false;
@@ -179,7 +172,7 @@ export const useStore = defineStore("coin", {
     changeLanguage() {
       const language =
         this.language === "pt" ? "en" : "pt";
-      this.language = language;
+      this.language = language; 
       localStorage.clear();
       localStorage.setItem(
         "@khiza:user-locale",
