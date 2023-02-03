@@ -16,7 +16,16 @@ const {
   filterResults,
   resetFilter,
   changeLanguage,
+  fetchCoinOrderBook,
+  fetchCoinTicker,
+  fetchCoinTrades,
 } = useStore();
+
+setInterval(function () {
+  fetchCoinOrderBook();
+  fetchCoinTicker();
+  fetchCoinTrades();
+}, 5000);
 </script>
 
 <template>
