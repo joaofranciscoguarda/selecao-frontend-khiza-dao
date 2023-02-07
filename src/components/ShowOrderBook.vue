@@ -18,10 +18,6 @@ const {
 const { fetchCoinOrderBook, calcDayVariation } =
   useStore();
 
-onMounted(() => {
-  fetchCoinOrderBook();
-});
-
 watch(
   selectedCoin,
   async (selectedCoin, prevSelectedCoin) => {

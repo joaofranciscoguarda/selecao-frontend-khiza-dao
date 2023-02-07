@@ -20,10 +20,6 @@ const {
 const { fetchCoinTrades, calcDayVariation } =
   useStore();
 
-onMounted(() => {
-  fetchCoinTrades();
-});
-
 watch(
   selectedCoin,
   async (selectedCoin, prevSelectedCoin) => {

@@ -32,6 +32,10 @@ Em caso de dúvidas sobre a implementação entre em contato com yudi@khizadao.c
 
 # Initialização
 
+Certifique-se de possuir "serve" instalado:
+
+`npm install -g serve`
+
 Para iniciar a aplicação localmente, basta possuir o node instalado e rodar
 
 ```
@@ -43,6 +47,8 @@ yarn
 
 ```
 
-Após instalar as dependencias, rode o comanado `yarn vite` para abrir o localhost
+Após instalar as dependencias, rode o comanado `yarn build` para abrir criar a pasta Dist
+
+Depois, digite no terminal `yarn preview`, no terminal aparecerá dois links para acessar a aplicação. 
 
 E é isso, obrigado!

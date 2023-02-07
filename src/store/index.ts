@@ -172,7 +172,7 @@ export const useStore = defineStore("coin", {
     changeLanguage() {
       const language =
         this.language === "pt" ? "en" : "pt";
-      this.language = language; 
+      this.language = language;
       localStorage.clear();
       localStorage.setItem(
         "@khiza:user-locale",
