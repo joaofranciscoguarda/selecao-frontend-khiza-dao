@@ -25,6 +25,23 @@ export interface IState {
   isDateFilterActive: boolean;
 }
 
+const firstLanguage = ref("");
+
+function setInitialLanguage() {
+  const languageLocalStorage =
+    localStorage.getItem("@khiza:user-locale");
+  
+  if (languageLocalStorage === 'en') {
+    localStorage.setItem("@khiza:user-locale", 'en')
+  }
+  else if (languageLocalStorage === 'pt') {
+    localStorage.setItem("@khiza:user-locale", 'pt')
+  }
+  else localStorage.setItem("@khiza:user-locale", 'pt')
+}
+
+setInitialLanguage()
+
 const endDate = ref(new Date());
 
 export const useStore = defineStore("coin", {
