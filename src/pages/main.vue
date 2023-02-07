@@ -22,9 +22,9 @@ const {
 } = useStore();
 
 // onMounted(() => {
-  fetchCoinTicker();
-  fetchCoinTrades();
-  fetchCoinOrderBook();
+// fetchCoinTicker();
+// fetchCoinTrades();
+// fetchCoinOrderBook();
 // });
 
 setInterval(function () {
