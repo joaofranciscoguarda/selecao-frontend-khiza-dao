@@ -21,11 +21,11 @@ const {
   fetchCoinTrades,
 } = useStore();
 
-onMounted(() => {
+// onMounted(() => {
   fetchCoinTicker();
   fetchCoinTrades();
   fetchCoinOrderBook();
-});
+// });
 
 setInterval(function () {
   if (!store.isDateFilterActive.value) {
