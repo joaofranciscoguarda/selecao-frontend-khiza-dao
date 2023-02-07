@@ -62,6 +62,7 @@ export const useStore = defineStore("coin", {
         const data = await axios.get(
           baseUrl + code + "/ticker/"
         );
+        console.log(this.coinTicker);
 
         return (this.coinTicker = data.data);
       } catch (error) {
@@ -80,6 +81,8 @@ export const useStore = defineStore("coin", {
           baseUrl + code + "/trades/"
         );
         const newData: ICoinTrades[] = data.data;
+
+        console.log(this.coinTrades);
 
         this.coinTrades = newData
           .reverse()
@@ -103,6 +106,8 @@ export const useStore = defineStore("coin", {
 
         newData.asks.splice(13);
         newData.bids.splice(13);
+
+        console.log(this.coinOrderBook);
 
         this.coinOrderBook = newData;
       } catch (error) {
